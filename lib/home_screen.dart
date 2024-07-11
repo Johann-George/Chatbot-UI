@@ -8,16 +8,23 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
-
+/// The state class for HomeScreen, responsible for maintaining state
+/// and building the UI for the chat application.
 class _HomeScreenState extends State<HomeScreen> {
+  // The generative model instance.
   late final GenerativeModel _model;
+  // The chat session instance.
   late final ChatSession _chatSession;
+  // Focus node for the text field.
   final FocusNode _textFieldFocus=FocusNode();
+  // Text editing controller for the text field.
   final TextEditingController _textController=TextEditingController();
+  // Scroll controller for the list view.
   final ScrollController _scrollController=ScrollController();
+  // Loading state indicator.
   bool _loading=false;
 
-
+  /// Initializes the state and sets up the generative model and chat session.
   @override
   void initState() {
     // TODO: implement initState
@@ -28,6 +35,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
     _chatSession=_model.startChat();
   }
+
+  /// Builds the widget tree for the home screen.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,6 +79,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           onSubmitted: _sendChatMessage,
                         ),
                     ),
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () {
+                        if (_textController.text.isNotEmpty) {
+                          _sendChatMessage(_textController.text);
+                        }
+                      },
+                    ),
                     const SizedBox(height: 15),
                   ],
                 ),
@@ -80,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Returns the decoration for the text field.
   InputDecoration textFieldDecoration(){
     return InputDecoration(
       contentPadding: const EdgeInsets.all(15),
@@ -103,6 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Sends a chat message to the generative model and handles the response.
   Future<void> _sendChatMessage(String message) async{
     setState(() {
       _loading=true;
@@ -139,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// Scrolls down the list view to show the latest message.
   void _scrollDown(){
     WidgetsBinding.instance.addPostFrameCallback(
         (_)=>_scrollController.animateTo(
@@ -151,6 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Shows an error dialog with the provided message.
   void _showError(String message){
     showDialog<void>(
       context: context,
